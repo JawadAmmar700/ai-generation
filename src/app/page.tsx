@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import { useState } from "react";
 import Spinner from "@/components/snipper";
 
-export const runtime = "experimental-edge";
+// export const runtime = "experimental-edge";
 
 const inter = Inter({ subsets: ["latin"] });
 
