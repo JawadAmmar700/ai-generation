@@ -1,11 +1,16 @@
-// export const runtime = "experimental-edge";
 import {
   createParser,
   ParsedEvent,
   ReconnectInterval,
 } from "eventsource-parser";
 
-export async function POST(request: Request) {
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(request: Request) {
+  if (request.method !== "POST")
+    return new Response("Method not allowed", { status: 405 });
   const { prompt } = await request.json();
 
   const openaiOptions = {
@@ -67,7 +72,3 @@ export async function POST(request: Request) {
 
   return new Response(stream);
 }
-
-// export const config = {
-//   runtime: "edge",
-// };
