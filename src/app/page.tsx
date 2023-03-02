@@ -48,7 +48,7 @@ export default function Home() {
 
     setGenerating(true);
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}`, {
+    const response = await fetch("/api/completion", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
