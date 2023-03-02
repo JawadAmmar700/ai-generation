@@ -48,16 +48,13 @@ export default function Home() {
 
     setGenerating(true);
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/completion`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: searchTerm }),
-      }
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt: searchTerm }),
+    });
     if (response.ok) {
       const data = response.body;
       if (!data) {
@@ -83,7 +80,6 @@ export default function Home() {
               description: description.join(":"),
             };
           });
-        console.log(d);
         setChoices(d);
 
         if (done) {
