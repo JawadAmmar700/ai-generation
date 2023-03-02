@@ -68,7 +68,6 @@ export default function Home() {
         const { value, done } = await reader.read();
         const chunk = decoder.decode(value);
         text += chunk;
-
         const d = text
           .split("\n")
           .map((line) => line.trim())

@@ -1,4 +1,9 @@
 // export const runtime = "experimental-edge";
+import {
+  createParser,
+  ParsedEvent,
+  ReconnectInterval,
+} from "eventsource-parser";
 
 export async function POST(request: Request) {
   const { prompt } = await request.json();
@@ -24,33 +29,39 @@ export async function POST(request: Request) {
     body: JSON.stringify(openaiOptions),
   });
 
-  const reader = response.body?.getReader();
-
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
 
+  let counter = 0;
+
   const stream = new ReadableStream({
-    start(controller) {
-      function push() {
-        reader?.read().then(({ done, value }) => {
-          try {
-            if (done) {
-              controller.close();
-              return;
-            }
-            const decoded = decoder.decode(value).split("data:")[1];
-            const chuckData = JSON.parse(decoded).choices[0].text;
-            const encode = encoder.encode(chuckData);
-            controller.enqueue(encode);
-            push();
-          } catch (e) {
+    async start(controller) {
+      function onParse(event: ParsedEvent | ReconnectInterval) {
+        if (event.type === "event") {
+          const data = event.data;
+          if (data === "[DONE]") {
             controller.close();
             return;
           }
-        });
+          try {
+            const json = JSON.parse(data);
+            const text = json.choices[0].text;
+            if (counter < 2 && (text.match(/\n/) || []).length) {
+              return;
+            }
+            const queue = encoder.encode(text);
+            controller.enqueue(queue);
+            counter++;
+          } catch (e) {
+            controller.error(e);
+          }
+        }
       }
 
-      push();
+      const parser = createParser(onParse);
+      for await (const chunk of response.body as any) {
+        parser.feed(decoder.decode(chunk));
+      }
     },
   });
 
