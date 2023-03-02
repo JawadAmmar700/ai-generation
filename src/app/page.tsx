@@ -48,7 +48,7 @@ export default function Home() {
 
     setGenerating(true);
 
-    const response = await fetch("http://localhost:3000/api/completion", {
+    const response = await fetch(`${process.env.URL}/api/completion`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
