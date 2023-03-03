@@ -4,9 +4,13 @@ import {
   ReconnectInterval,
 } from "eventsource-parser";
 
-export const runtime = "experimental-edge";
+export const config = {
+  runtime: "experimental-edge",
+};
 
-export async function POST(request: Request) {
+export default async function handler(request: Request) {
+  if (request.method !== "POST")
+    return new Response("Method not allowed", { status: 405 });
   const { prompt } = await request.json();
 
   const openaiOptions = {
