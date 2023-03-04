@@ -1,8 +1,4 @@
-import {
-  createParser,
-  ParsedEvent,
-  ReconnectInterval,
-} from "eventsource-parser";
+import streamWrapper from "@/lib/stream";
 
 export const config = {
   runtime: "experimental-edge",
@@ -34,41 +30,7 @@ export default async function handler(request: Request) {
     body: JSON.stringify(openaiOptions),
   });
 
-  const decoder = new TextDecoder();
-  const encoder = new TextEncoder();
-
-  let counter = 0;
-
-  const stream = new ReadableStream({
-    async start(controller) {
-      function onParse(event: ParsedEvent | ReconnectInterval) {
-        if (event.type === "event") {
-          const data = event.data;
-          if (data === "[DONE]") {
-            controller.close();
-            return;
-          }
-          try {
-            const json = JSON.parse(data);
-            const text = json.choices[0].text;
-            if (counter < 2 && (text.match(/\n/) || []).length) {
-              return;
-            }
-            const queue = encoder.encode(text);
-            controller.enqueue(queue);
-            counter++;
-          } catch (e) {
-            controller.error(e);
-          }
-        }
-      }
-
-      const parser = createParser(onParse);
-      for await (const chunk of response.body as any) {
-        parser.feed(decoder.decode(chunk));
-      }
-    },
-  });
+  const stream = await streamWrapper(response);
 
   return new Response(stream);
 }
