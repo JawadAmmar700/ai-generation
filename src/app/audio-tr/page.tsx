@@ -1,10 +1,10 @@
 "use client";
 import Spinner from "@/components/snipper";
 import { audioFileSize, languages, validFileTypes } from "@/lib/constants";
-import { bytesToSize, streamBehavior } from "@/lib/helpers";
+import { bytesToSize, streamTextAsChucks } from "@/lib/helpers";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
-import { flushSync } from "react-dom";
+import { useRouter } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast";
 
 export const runtime = "experimental-edge";
@@ -15,6 +15,7 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [transcription, setTranscription] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("en");
+  const router = useRouter();
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -45,7 +46,7 @@ const Page = () => {
       if (res.ok) {
         setLoading(false);
         const data = await res.json();
-        setTranscription(data.text);
+        streamTextAsChucks(data.text, setTranscription);
       }
     } catch (e) {
       return toast.error("It seems that openai is not available right now");
@@ -57,6 +58,7 @@ const Page = () => {
     setDescription("");
     setTranscription("");
     setSelectedType("en");
+    router.refresh();
   };
 
   return (
@@ -105,7 +107,7 @@ const Page = () => {
       <div className="form-control w-full max-w-xl">
         <label className="label">
           <span className="label-text text-black font-bold">
-            To what language you need to transcribe?
+            In what language is the provided audio?
           </span>
         </label>
         <select
