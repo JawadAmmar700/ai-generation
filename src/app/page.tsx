@@ -151,7 +151,7 @@ export default function Home() {
         Generate your Preferences
       </button>
       {generating ? (
-        <Spinner />
+        <Spinner loadingText="loading" />
       ) : (
         <div className="w-full max-w-3xl flex flex-col space-y-5">
           {choices.map((choice, idx) => (

@@ -1,4 +1,4 @@
-const Spinner = () => {
+const Spinner = ({ loadingText }: { loadingText: string }) => {
   return (
     <div
       aria-label="Loading..."
@@ -82,7 +82,9 @@ const Spinner = () => {
           strokeWidth="24"
         ></line>
       </svg>
-      <span className="text-xs font-medium text-gray-500">Loading...</span>
+      <span className="text-xs font-medium text-gray-500">
+        {loadingText}...
+      </span>
     </div>
   );
 };

@@ -11,10 +11,13 @@ const Sidebar = () => {
           </h2>
           <div className="flex flex-col space-y-1 font-bold">
             <Link href="/" className="hover:text-gray-500">
-              Flim Generation
+              Flim Text Generation
             </Link>
             <Link href="/audio-tr" className="hover:text-gray-500">
-              Audio Translation
+              Audio Transcriptions
+            </Link>
+            <Link href="/chatgpt" className="hover:text-gray-500">
+              ChatGPT assistant
             </Link>
           </div>
         </div>

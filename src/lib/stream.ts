@@ -4,7 +4,10 @@ import {
   ReconnectInterval,
 } from "eventsource-parser";
 
-const streamWrapper = async (response: Response) => {
+const streamWrapper = async (
+  response: Response,
+  isUsingChatCompletion: boolean = false
+) => {
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
 
@@ -21,7 +24,11 @@ const streamWrapper = async (response: Response) => {
           }
           try {
             const json = JSON.parse(data);
-            const text = json.choices[0].text;
+            const text = !isUsingChatCompletion
+              ? json.choices[0].text
+              : json.choices[0].delta.content === undefined
+              ? ""
+              : json.choices[0].delta.content;
             if (counter < 2 && (text.match(/\n/) || []).length) {
               return;
             }

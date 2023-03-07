@@ -145,7 +145,7 @@ const Page = () => {
       </button>
       {loading ? (
         <div className="mt-5">
-          <Spinner />
+          <Spinner loadingText="loading" />
         </div>
       ) : (
         <div className="w-full max-w-3xl flex flex-col space-y-5 mt-10">

@@ -16,7 +16,7 @@ export default function RootLayout({
       <body className="bg-[#EEF2F4]">
         <div className="flex flex-col md:flex-row space-y-5 w-full h-screen p-5">
           <Sidebar />
-          <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+          <main className="flex-1 md:p-6 overflow-y-auto">{children}</main>
         </div>
       </body>
     </html>
